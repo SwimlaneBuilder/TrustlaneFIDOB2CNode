@@ -17,7 +17,7 @@ on:
     types: [created]
 
 env:
-  AZURE_WEBAPP_NAME: TrustlaneFIDOB2CNode    # set this to your application's name
+  AZURE_WEBAPP_NAME: TrustlaneProd   # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '10.x'                # set this to the node version to use
 
@@ -26,11 +26,15 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    # checkout the repo
+    - name: 'Checkout GitHub Action' 
+      uses: actions/checkout@master
+    
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ env.NODE_VERSION }}
+    
     - name: npm install, build, and test
       run: |
         # Build and test the project, then
@@ -38,9 +42,9 @@ jobs:
         npm install
         npm run build --if-present
         npm run test --if-present
+        
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }} 
